@@ -1,0 +1,35 @@
+{
+  "name": "pandora-hook",
+  "version": "1.0.0",
+  "description": "pandora module hook",
+  "main": "index.js",
+  "scripts": {
+    "test": "egg-bin test",
+    "cov": "nyc report --reporter=html && nyc mocha"
+  },
+  "dependencies": {
+    "globby": "^6.1.0",
+    "module-hook": "^1.0.0",
+    "pandora-metrics": "0.1.0-alpha.eb73f965",
+    "shimmer": "^1.1.0"
+  },
+  "devDependencies": {
+    "egg-bin": "^4.3.5",
+    "mocha": "^4.0.1",
+    "nyc": "^11.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/midwayjs/pandora-hook.git"
+  },
+  "keywords": [
+    "pandora",
+    "hook"
+  ],
+  "author": "308512341@qq.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/midwayjs/pandora-hook/issues"
+  },
+  "homepage": "https://github.com/midwayjs/pandora-hook#readme"
+}
