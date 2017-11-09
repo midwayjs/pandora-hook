@@ -4,8 +4,9 @@
   "description": "pandora module hook",
   "main": "index.js",
   "scripts": {
-    "test": "egg-bin test",
-    "cov": "nyc report --reporter=html && nyc mocha"
+    "build": "./tools/build.sh",
+    "cov": "nyc report --reporter=lcov",
+    "test": "nyc mocha"
   },
   "dependencies": {
     "globby": "^6.1.0",
@@ -14,7 +15,6 @@
     "shimmer": "^1.1.0"
   },
   "devDependencies": {
-    "egg-bin": "^4.3.5",
     "mocha": "^4.0.1",
     "nyc": "^11.3.0"
   },
