@@ -5,7 +5,6 @@ node_js:
 install:
   - npm i
 before_script:
-  - npm install
   - npm run build
 script:
   - npm run test
