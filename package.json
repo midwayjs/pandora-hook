@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "./tools/build.sh",
-    "cov": "nyc report --reporter=lcov",
-    "test": "nyc mocha"
+    "cov": "nyc mocha",
+    "test": "mocha"
   },
   "dependencies": {
     "globby": "^6.1.0",

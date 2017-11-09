@@ -11,6 +11,7 @@ const fork = function(name, done) {
   });
   worker.on('message', (data) => {
     if (data === 'done') {
+      worker.kill();
       done();
     }
   });
@@ -19,5 +20,9 @@ const fork = function(name, done) {
 describe('test/index.test.js', () => {
   it('should egg-logger work ok', done => {
     fork('egg-logger', done);
+  });
+
+  it('should urllib work ok', done => {
+    fork('urllib', done);
   });
 });
