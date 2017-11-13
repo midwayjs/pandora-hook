@@ -33,7 +33,7 @@
     "hook"
   ],
   "author": "308512341@qq.com",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/midwayjs/pandora-hook/issues"
   },
