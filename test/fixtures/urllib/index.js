@@ -3,7 +3,8 @@ const assert = require('assert');
 run(function(done) {
   const urllib = require('urllib');
   const url = 'https://www.taobao.com/';
-  process.on('pandora-hook:urllib', node => {
+  process.on('pandora:hook:module', info => {
+    const node = info.data;
     assert(node.url === url);
     assert(node.method === 'get');
     assert(node.rt > 0);

@@ -1,10 +1,11 @@
 'use strict';
 
-module.exports = (hook, shimmer) => {
+module.exports = ({hook, shimmer, tracer, send}) => {
   hook('urllib', '^2.x', (loadModule, replaceSource) => {
     const urllib = loadModule('lib/urllib');
     shimmer.wrap(urllib, 'requestWithCallback', (request) => {
       return function wrapped(url, args, callback) {
+        const trace = tracer.getCurrentTrace();
         if (arguments.length === 2 && typeof args === 'function') {
           callback = args;
           args = null;
@@ -34,7 +35,15 @@ module.exports = (hook, shimmer) => {
             node.status = res.status;
           }
           node.rt = Date.now() - startTime;
-          process.emit('pandora-hook:urllib', node);
+          process.nextTick(() => {
+            send('module', {
+              name: 'urllib',
+              data: node
+            });
+          });
+          if (trace) {
+            trace.chain.push(node);
+          }
           callback(err, data, res);
         });
       };

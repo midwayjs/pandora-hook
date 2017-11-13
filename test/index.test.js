@@ -25,4 +25,8 @@ describe('test/index.test.js', () => {
   it('should urllib work ok', done => {
     fork('urllib', done);
   });
+
+  it('should http and trace work ok', done => {
+    fork('http', done);
+  });
 });

@@ -9,6 +9,8 @@
     "test": "mocha"
   },
   "dependencies": {
+    "cls-bluebird": "^2.0.1",
+    "cls-hooked": "^4.2.2",
     "globby": "^6.1.0",
     "module-hook": "^1.0.0",
     "pandora-metrics": "0.1.0-alpha.eb73f965",
@@ -18,6 +20,10 @@
     "mocha": "^4.0.1",
     "nyc": "^11.3.0"
   },
+  "files": [
+    "patch",
+    "index.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/midwayjs/pandora-hook.git"
