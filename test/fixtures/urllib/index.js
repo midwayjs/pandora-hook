@@ -7,7 +7,7 @@ run(function(done) {
     const node = info.data;
     assert(node.url === url);
     assert(node.method === 'get');
-    assert(node.rt > 0);
+    assert(node.endTime);
     assert(node.startTime);
     done();
   });

@@ -13,8 +13,11 @@
     "cls-hooked": "^4.2.2",
     "globby": "^6.1.0",
     "module-hook": "^1.0.0",
+    "opentracing": "^0.14.1",
     "pandora-metrics": "0.1.0-alpha.eb73f965",
-    "shimmer": "^1.1.0"
+    "shimmer": "^1.1.0",
+    "super-event-emitter": "^4.1.4",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "mocha": "^4.0.1",

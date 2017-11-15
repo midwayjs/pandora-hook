@@ -1,49 +1,53 @@
 'use strict';
 
-module.exports = ({hook, shimmer, tracer, send}) => {
+module.exports = ({hook, shimmer, Tracer, send}) => {
   hook('urllib', '^2.x', (loadModule, replaceSource) => {
     const urllib = loadModule('lib/urllib');
     shimmer.wrap(urllib, 'requestWithCallback', (request) => {
       return function wrapped(url, args, callback) {
-        const trace = tracer.getCurrentTrace();
         if (arguments.length === 2 && typeof args === 'function') {
           callback = args;
           args = null;
         }
 
         args = args || {};
-        const startTime = Date.now();
 
-        const node = {
-          startTime,
-          rt: 0,
-          url,
+        const startTime = Date.now();
+        const tags = {
           method: (args.method || 'GET').toLowerCase(),
-          req: {
-            data: args.data,
-            content: args.content,
-            contentType: args.contentType,
-            dataType: args.dataType,
-            headers: args.headers,
-            timeout: args.timeout,
-          }
+          url,
+          data: args.data,
+          content: args.content,
+          contentType: args.contentType,
+          dataType: args.dataType,
+          headers: args.headers,
+          timeout: args.timeout,
         };
+        const tracer = Tracer.getCurrentTracer();
+        let span = tracer && tracer.startSpan('urllib');
+        if (span) {
+          span.addTags(tags);
+        }
+
         return request.call(this, url, args, (err, data, res) => {
-          node.error = err;
-          if (res) {
-            node.res = res;
-            node.status = res.status;
+          if (span) {
+            span.setTag('error', err);
+            span.setTag('response', res);
+            span.finish();
           }
-          node.rt = Date.now() - startTime;
+
           process.nextTick(() => {
             send('module', {
               name: 'urllib',
-              data: node
+              data: Object.assign({
+                startTime,
+                endTime: Date.now(),
+                error: err,
+                res: res
+              }, tags),
             });
           });
-          if (trace) {
-            trace.chain.push(node);
-          }
+
           callback(err, data, res);
         });
       };

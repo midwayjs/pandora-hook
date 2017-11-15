@@ -1,5 +1,5 @@
 'use strict';
-const tracer = require('./lib/tracer');
+const tracer = require('./lib/trace_manager');
 const hook = require('module-hook');
 const shimmer = require('shimmer');
 const globby = require('globby');
@@ -17,7 +17,7 @@ globby.sync(['*.js', '*/**.js'], {
   m({
     hook,
     shimmer,
-    tracer,
+    Tracer: tracer,
     send
   });
 });

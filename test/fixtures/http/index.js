@@ -6,8 +6,8 @@ run(function(done) {
   const urllib = require('urllib');
   const url = 'https://www.taobao.com/';
 
-  process.on('pandora:hook:trace', node => {
-    assert(node.chain.length > 0);
+  process.on('pandora:hook:trace', tracer => {
+    assert(tracer._spans.length > 0);
     done();
   });
 
