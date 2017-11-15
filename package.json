@@ -12,6 +12,7 @@
     "pandora-metrics": "beta"
   },
   "devDependencies": {
+    "egg-logger": "^1.6.0",
     "globby": "^6.1.0",
     "mocha": "^4.0.1",
     "module-hook": "^1.0.0",

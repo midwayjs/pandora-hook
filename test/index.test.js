@@ -15,7 +15,7 @@ const fork = function(name, done) {
       done();
     }
   });
-}
+};
 
 describe('test/index.test.js', () => {
   it('should egg-logger work ok', done => {
