@@ -6,7 +6,7 @@ run(function(done) {
   const urllib = require('urllib');
   const url = 'https://www.taobao.com/';
 
-  process.on('pandora:hook:trace', tracer => {
+  process.on('PANDORA_PROCESS_MESSAGE_TRACE', tracer => {
     assert(tracer._spans.length > 0);
     done();
   });
@@ -23,7 +23,7 @@ run(function(done) {
 
   server.getTraceId = function(req) {
     return Math.random();
-  }
+  };
 
   server.listen(0, () => {
     const port = server.address().port;

@@ -3,7 +3,7 @@ run(function(done) {
   const Logger = require('egg-logger').Logger;
   const logger = new Logger();
   const assert = require('assert');
-  process.on('pandora:hook:logger', info => {
+  process.on('PANDORA_PROCESS_MESSAGE_LOGGER', info => {
     const args = info.args;
     const err = args[0];
     assert(info.method === 'error');

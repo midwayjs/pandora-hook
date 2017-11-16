@@ -1,6 +1,7 @@
 'use strict';
+const MessageConstants = require('pandora-metrics').MessageConstants;
 
-module.exports = ({hook, shimmer, Tracer, send}) => {
+module.exports = ({hook, shimmer, Tracer, sender}) => {
   hook('urllib', '^2.x', (loadModule, replaceSource) => {
     const urllib = loadModule('lib/urllib');
     shimmer.wrap(urllib, 'requestWithCallback', (request) => {
@@ -37,7 +38,7 @@ module.exports = ({hook, shimmer, Tracer, send}) => {
           }
 
           process.nextTick(() => {
-            send('module', {
+            sender.send(MessageConstants.TRACE, {
               name: 'urllib',
               data: Object.assign({
                 startTime,

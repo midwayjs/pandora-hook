@@ -1,6 +1,8 @@
 'use strict';
 const http = require('http');
-module.exports = ({hook, shimmer, Tracer, send}) => {
+const MessageConstants = require('pandora-metrics').MessageConstants;
+
+module.exports = ({hook, shimmer, Tracer, sender}) => {
   shimmer.wrap(http, 'createServer', function wrapCreateServer(createServer) {
     return function wrappedCreateServer(requestListener) {
       if (requestListener) {
@@ -18,7 +20,7 @@ module.exports = ({hook, shimmer, Tracer, send}) => {
             res.once('finish', () => {
               span.finish();
               tracer.finish();
-              send('trace', tracer);
+              sender.send(MessageConstants.TRACE, tracer);
             });
           }
           return requestListener(req, res);
