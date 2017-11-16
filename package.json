@@ -1,6 +1,6 @@
 {
   "name": "pandora-hook",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "pandora module hook",
   "main": "index.js",
   "scripts": {
@@ -9,10 +9,10 @@
     "test": "mocha"
   },
   "dependencies": {
+    "cls-bluebird": "^2.0.1",
     "pandora-metrics": "beta"
   },
   "devDependencies": {
-    "cls-bluebird": "^2.0.1",
     "globby": "^6.1.0",
     "mocha": "^4.0.1",
     "module-hook": "^1.0.0",
