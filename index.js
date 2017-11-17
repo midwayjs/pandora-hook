@@ -1,5 +1,5 @@
 'use strict';
-exports.eggLogger = require('./patch/egg-logger');
-exports.urllib = require('./patch/urllib');
-exports.bluebird = require('./patch/bluebird');
-exports.http = require('./patch/http');
+exports.EggLoggerPatcher = require('./patch/egg-logger');
+exports.UrllibPatcher = require('./patch/urllib');
+exports.BluebirdPatcher = require('./patch/bluebird');
+exports.HttpPatcher = require('./patch/http');
