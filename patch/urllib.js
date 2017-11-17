@@ -1,7 +1,7 @@
 'use strict';
 const MessageConstants = require('pandora-metrics').MessageConstants;
 
-module.exports = ({hook, shimmer, Tracer, sender}) => {
+module.exports = ({hook, shimmer, tracer, sender}) => {
   hook('urllib', '^2.x', (loadModule, replaceSource) => {
     const urllib = loadModule('lib/urllib');
     shimmer.wrap(urllib, 'requestWithCallback', (request) => {
@@ -24,7 +24,7 @@ module.exports = ({hook, shimmer, Tracer, sender}) => {
           headers: args.headers,
           timeout: args.timeout,
         };
-        const tracer = Tracer.getCurrentTracer();
+        const tracer = tracer.getCurrentTracer();
         let span = tracer && tracer.startSpan('urllib');
         if (span) {
           span.addTags(tags);

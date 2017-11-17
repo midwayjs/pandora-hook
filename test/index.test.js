@@ -5,6 +5,7 @@ const fork = function(name, done) {
   const filePath = require.resolve(path.join(__dirname, `fixtures/${name}`));
   const worker = childProcess.fork(filePath, {
     env: {
+      ...process.env,
       NODE_ENV: 'test',
     },
     execArgv: ['-r', path.join(__dirname, 'helper.js')]
