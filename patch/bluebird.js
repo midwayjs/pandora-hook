@@ -1,6 +1,6 @@
 'use strict';
 const clsBluebird = require('cls-bluebird');
-const {Patcher} = require('pandora-metrics');
+const { Patcher } = require('pandora-metrics');
 
 class BluebirdPatcher extends Patcher {
 

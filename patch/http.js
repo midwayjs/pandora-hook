@@ -1,33 +1,37 @@
 'use strict';
 const http = require('http');
-const {Patcher, MessageConstants} = require('pandora-metrics');
+const { Patcher, MessageConstants } = require('pandora-metrics');
+const { generateTraceId } = require('../utils/trace');
 
 class HttpPatcher extends Patcher {
 
   constructor() {
     super();
 
-    let TraceManager = this.getTraceManager();
+    const self = this;
+    const traceManager = this.getTraceManager();
+
     this.getShimmer().wrap(http, 'createServer', function wrapCreateServer(createServer) {
       return function wrappedCreateServer(requestListener) {
         if (requestListener) {
-          const listener = TraceManager.bind(function(req, res) {
-            if (this.getTraceId) {
-              TraceManager.bindEmitter(req);
-              TraceManager.bindEmitter(res);
-              const traceId = this.getTraceId(req);
-              const tracer = TraceManager.create({
-                traceId
-              });
-              const span = tracer.startSpan('http');
-              span.setTag('method', req.method.toUpperCase());
-              span.setTag('url', req.url);
-              res.once('finish', () => {
-                span.finish();
-                tracer.finish();
-                this.getSender().send(MessageConstants.TRACE, tracer);
-              });
-            }
+
+          const listener = traceManager.bind(function(req, res) {
+            traceManager.bindEmitter(req);
+            traceManager.bindEmitter(res);
+
+            const traceId = self.getTraceId(req);
+            const tracer = traceManager.create({
+              traceId
+            });
+
+            const span = self.createSpan(tracer, req);
+
+            res.once('finish', () => {
+              span.finish();
+              tracer.finish();
+              self.getSender().send(MessageConstants.TRACE, tracer.report());
+            });
+
             return requestListener(req, res);
           });
           return createServer.call(this, listener);
@@ -36,5 +40,23 @@ class HttpPatcher extends Patcher {
       }
     });
   }
+
+  getTraceId(req) {
+    return req.headers['x-trace-id'] || generateTraceId();
+  }
+
+  createSpan(tracer, req) {
+    const span = tracer.startSpan('http', {
+      ctx: {
+        traceId: this.getTraceId(req)
+      }
+    });
+
+    span.setTag('method', req.method.toUpperCase());
+    span.setTag('url', req.url);
+
+    return span;
+  }
 }
+
 module.exports = HttpPatcher;

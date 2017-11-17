@@ -10,14 +10,17 @@
   },
   "dependencies": {
     "cls-bluebird": "^2.0.1",
-    "pandora-metrics": "beta"
+    "pandora-metrics": "beta",
+    "xorshift": "^1.1.1"
   },
   "devDependencies": {
+    "bluebird": "^3.5.1",
     "egg-logger": "^1.6.0",
     "globby": "^6.1.0",
     "mocha": "^4.0.1",
     "module-hook": "^1.0.0",
     "nyc": "^11.3.0",
+    "pedding": "^1.1.0",
     "shimmer": "^1.1.0",
     "urllib": "^2.25.1"
   },

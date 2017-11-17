@@ -1,18 +1,19 @@
 'use strict';
-const {Patcher, MessageConstants} = require('pandora-metrics');
+const { Patcher, MessageConstants } = require('pandora-metrics');
 
 class EggLoggerPatcher extends Patcher {
 
   constructor() {
     super();
 
+    const self = this;
     this.hook('^1.6.x', (loadModule, replaceSource) => {
       const logger = loadModule('lib/logger.js');
       ['info', 'error', 'warn'].forEach(method => {
         this.getShimmer().wrap(logger.prototype, method, (log) => {
-          return function () {
+          return function() {
             process.nextTick(() => {
-              this.getSender().send(MessageConstants.LOGGER, {
+              self.getSender().send(MessageConstants.LOGGER, {
                 method,
                 args: arguments
               });

@@ -1,10 +1,12 @@
 'use strict';
-const {Patcher, MessageConstants} = require('pandora-metrics');
+const { Patcher, MessageConstants } = require('pandora-metrics');
 
 class UrllibPatcher extends Patcher {
 
   constructor() {
     super();
+
+    const self = this;
 
     this.hook('^2.x', (loadModule) => {
       const urllib = loadModule('lib/urllib');
@@ -16,42 +18,31 @@ class UrllibPatcher extends Patcher {
           }
 
           args = args || {};
-
           const startTime = Date.now();
-          const tags = {
-            method: (args.method || 'GET').toLowerCase(),
-            url,
-            data: args.data,
-            content: args.content,
-            contentType: args.contentType,
-            dataType: args.dataType,
-            headers: args.headers,
-            timeout: args.timeout,
-          };
-          const tracer = this.getTraceManager().getCurrentTracer();
-          let span = tracer && tracer.startSpan('urllib');
-          if (span) {
-            span.addTags(tags);
-          }
+
+          const tracer = self.getTraceManager().getCurrentTracer();
+          const tags = self.buildTags(url, args);
+          const span = self.createSpan(tracer, tags);
 
           return request.call(this, url, args, (err, data, res) => {
             if (span) {
               span.setTag('error', err);
               span.setTag('response', res);
               span.finish();
-            }
-
-            process.nextTick(() => {
-              this.getSender().send(MessageConstants.TRACE, {
-                name: 'urllib',
-                data: Object.assign({
-                  startTime,
-                  endTime: Date.now(),
-                  error: err,
-                  res: res
-                }, tags),
+            } else {
+              // TODO: 完善以 urllib 为链路起点的操作跟踪
+              process.nextTick(() => {
+                self.getSender().send(MessageConstants.TRACENODE, {
+                  name: 'urllib',
+                  data: Object.assign({
+                    startTime,
+                    endTime: Date.now(),
+                    error: err,
+                    res: res
+                  }, tags)
+                });
               });
-            });
+            }
 
             callback(err, data, res);
           });
@@ -63,8 +54,44 @@ class UrllibPatcher extends Patcher {
   getModuleName() {
     return 'urllib';
   }
+
+  buildTags(url, args) {
+    return {
+      method: (args.method || 'GET').toLowerCase(),
+      url,
+      data: args.data,
+      content: args.content,
+      contentType: args.contentType,
+      dataType: args.dataType,
+      headers: args.headers,
+      timeout: args.timeout,
+    };
+  }
+
+  createSpan(tracer, tags) {
+    let span;
+
+    if (tracer) {
+      const currentSpan = tracer.getCurrentSpan();
+
+      if (currentSpan) {
+        const traceId = currentSpan.context().traceId;
+
+        span = tracer.startSpan('urllib', {
+          childOf: currentSpan,
+          ctx: {
+            traceId
+          }
+        });
+      }
+    }
+
+    if (span) {
+      span.addTags(tags);
+    }
+
+    return span;
+  }
 }
 
 module.exports = UrllibPatcher;
-
-

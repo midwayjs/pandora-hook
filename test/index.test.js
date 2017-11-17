@@ -18,7 +18,7 @@ const fork = function(name, done) {
   });
 };
 
-describe('test/index.test.js', () => {
+describe('unit test', () => {
   it('should egg-logger work ok', done => {
     fork('egg-logger', done);
   });
@@ -29,5 +29,15 @@ describe('test/index.test.js', () => {
 
   it('should http and trace work ok', done => {
     fork('http', done);
+  });
+
+  it('should bluebird work ok', done => {
+    fork('bluebird', done);
+  });
+});
+
+describe('integration test', () => {
+  it('should trace work', done => {
+    fork('integrate', done);
   });
 });
